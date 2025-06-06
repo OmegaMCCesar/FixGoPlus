@@ -1,0 +1,172 @@
+// src/components/Store/StorePage.js
+import React, { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext'; // Ajusta si es ../contexts/
+import Navbar from '../components/Navigation/Navbar'; // Ajusta si es ../components/Navigation/
+import { ReactComponent as TuerquitaLlenaIcon } from '../assets/icons/tuerquita-llenaa.svg'; // Icono principal de tuerquitas
+import { ReactComponent as InfiniteIcon } from '../assets/icons/infinite-pictogram-svgrepo-com.svg';
+import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.svg';
+import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
+// Iconos adicionales para características (opcional, o usa un placeholder)
+const CheckmarkFeatureIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-brand-green">
+        <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
+    </svg>
+);
+
+
+// DATOS DE PRODUCTOS (con sugerencias de colores de la paleta)
+const tuerquitaPackages = [
+  { id: 't15', name: "Paquete Arranque", amount: 15, price: '$5 MXN', pricePerUnit: '$0.33', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
+  { id: 't50', name: "Paquete Impulso", amount: 50, price: '$15 MXN', pricePerUnit: '$0.30', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
+  { id: 't100', name: "Kit Esencial", amount: 100, price: '$25 MXN', pricePerUnit: '$0.25', cardStyle: "border-accent-yellow ring-2 ring-accent-yellow scale-105", buttonStyle: "bg-accent-orange hover:bg-orange-600", iconFill: "fill-accent-orange", highlight: true, highlightText: '¡Recomendado!' },
+  { id: 't250', name: "Experto FixGo", amount: 250, price: '$50 MXN', pricePerUnit: '$0.20', cardStyle: "border-brand-purple", buttonStyle: "bg-brand-purple hover:bg-purple-700", iconFill: "fill-accent-orange" },
+];
+
+const subscriptionPlans = [
+    {
+        id: 'aprendiz_monthly',
+        name: 'Aprendiz FixGo',
+        price: '$49 MXN',
+        period: '/ mes',
+        cardStyle: "border-brand-green",
+        buttonStyle: "bg-brand-green hover:bg-green-700",
+        features: [
+            { text: 'Vidas Infinitas', icon: InfiniteIcon, iconColor: 'text-brand-purple' },
+            { text: 'Sin Anuncios', icon: AdFreeIcon, iconColor: 'text-accent-red' },
+            { text: '5 Tuerquitas Diarias', icon: TuerquitaLlenaIcon, iconColor: 'text-accent-orange' },
+        ]
+    },
+    {
+        id: 'tecnico_monthly',
+        name: 'Técnico FixGo PRO',
+        price: '$99 MXN',
+        period: '/ mes',
+        cardStyle: "border-brand-purple ring-2 ring-brand-purple scale-105", // Destacado premium
+        buttonStyle: "bg-brand-purple hover:bg-purple-700",
+        highlight: true,
+        highlightText: '¡Más Valor!',
+        features: [
+            { text: 'Vidas Infinitas', icon: InfiniteIcon, iconColor: 'text-brand-purple' },
+            { text: 'Sin Anuncios', icon: AdFreeIcon, iconColor: 'text-accent-red' },
+            { text: '15 Tuerquitas Diarias', icon: TuerquitaLlenaIcon, iconColor: 'text-accent-orange' },
+            { text: 'XP x1.5 Boost', icon: XPMultiplierIcon, iconColor: 'text-brand-green' },
+            { text: 'Acceso Anticipado a Módulos', icon: CheckmarkFeatureIcon, iconColor: 'text-brand-green' },
+            { text: '10% Descuento en Tuerquitas', icon: CheckmarkFeatureIcon, iconColor: 'text-brand-green' },
+        ]
+    }
+]
+
+const StorePage = () => {
+  const { currentUser } = useContext(UserContext);
+
+  const handleTuerquitaPurchase = (packageId, amount) => {
+    alert(`Iniciando compra del paquete ${packageId} (${amount} tuerquitas). ¡Integración de pago necesaria!`);
+  };
+
+  const handleSubscriptionPurchase = (planId) => {
+    alert(`Iniciando suscripción al plan ${planId}. ¡Integración de pago recurrente necesaria!`);
+  }
+
+  const CardBaseStyle = "bg-neutral-white rounded-2xl p-6 md:p-8 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out relative";
+
+  return (
+    <div className="min-h-screen bg-neutral-light pb-16">
+      <Navbar />
+      <div className="container mx-auto mt-8 px-4 md:px-6">
+
+        <h1 className="text-4xl md:text-5xl font-extrabold text-brand-blue mb-8 md:mb-12 text-center tracking-tight">
+          Tienda FixGo
+        </h1>
+
+        {currentUser && (
+          <div className="flex items-center justify-center mb-10 md:mb-12 p-4 bg-neutral-white rounded-xl shadow-lg border border-neutral-medium max-w-xs mx-auto">
+            <span className="text-text-secondary text-lg mr-2">Tu Balance:</span>
+            <TuerquitaLlenaIcon className="h-7 w-7 fill-accent-orange" />
+            <span className="text-accent-orange font-bold text-2xl ml-1">{currentUser.tuerquitas ?? 0}</span>
+          </div>
+        )}
+
+        {/* Sección de Compra de Tuerquitas */}
+        <section className="mb-12 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-blue mb-8 text-center">
+            Recarga tus Tuerquitas
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-stretch">
+            {tuerquitaPackages.map((pkg) => (
+              <div key={pkg.id} className={`${CardBaseStyle} ${pkg.cardStyle} ${pkg.highlight ? 'z-10' : ''}`}>
+                {pkg.highlight && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accent-yellow text-neutral-dark text-xs font-bold py-1.5 px-4 rounded-full shadow-lg whitespace-nowrap">
+                    {pkg.highlightText}
+                  </div>
+                )}
+                <div className="pt-5 text-center flex-grow"> {/* pt-5 para espacio si hay highlight badge */}
+                  <h3 className="text-xl font-semibold text-text-primary mb-3">{pkg.name}</h3>
+                  <TuerquitaLlenaIcon className={`h-16 w-16 mb-2 mx-auto ${pkg.iconFill}`} />
+                  <div className="flex items-baseline justify-center mb-1">
+                    <span className="text-4xl font-extrabold text-accent-orange">{pkg.amount}</span>
+                    <span className="text-lg text-accent-orange font-medium ml-1">Tuerquitas</span>
+                  </div>
+                  <p className="text-2xl font-bold text-brand-blue mb-1.5">{pkg.price}</p>
+                  <p className="text-xs text-text-secondary mb-6">(~{pkg.pricePerUnit} / tuerquita)</p>
+                </div>
+                <button
+                  onClick={() => handleTuerquitaPurchase(pkg.id, pkg.amount)}
+                  className={`w-full ${pkg.buttonStyle} text-neutral-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300 transform active:scale-95 mt-auto`}
+                >
+                  Comprar Paquete
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sección de Suscripciones */}
+        <section>
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-blue mb-8 text-center">
+                Conviértete en PRO
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch max-w-4xl mx-auto">
+                {subscriptionPlans.map((plan) => (
+                    <div key={plan.id} className={`${CardBaseStyle} ${plan.cardStyle} ${plan.highlight ? 'z-10' : ''}`}>
+                        {plan.highlight && (
+                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-purple text-neutral-white text-xs font-bold py-1.5 px-4 rounded-full shadow-lg whitespace-nowrap">
+                                {plan.highlightText}
+                            </div>
+                        )}
+                        <div className="pt-5 text-center flex-grow">
+                            <h3 className="text-2xl font-bold text-text-primary mb-2">{plan.name}</h3>
+                            <div className="mb-6">
+                                <span className="text-4xl font-extrabold text-brand-blue">{plan.price}</span>
+                                <span className="text-base text-text-secondary ml-1">{plan.period}</span>
+                            </div>
+                            <ul className="space-y-3 text-left mb-8 text-sm md:text-base">
+                                {plan.features.map((feature, index) => (
+                                    <li key={index} className="flex items-center text-text-primary">
+                                        {feature.icon ? 
+                                            <feature.icon className={`h-5 w-5 mr-2.5 shrink-0 ${feature.iconColor || 'text-brand-green'}`} /> 
+                                            : <span className="h-5 w-5 mr-2.5 inline-block shrink-0"></span>}
+                                        <span>{feature.text}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <button
+                            onClick={() => handleSubscriptionPurchase(plan.id)}
+                            className={`w-full ${plan.buttonStyle} text-neutral-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300 transform active:scale-95 mt-auto`}
+                        >
+                            Suscribirse Ahora
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </section>
+
+        <p className="text-center text-xs text-text-secondary mt-12 md:mt-16">
+          Los precios están en Pesos Mexicanos (MXN). Las suscripciones se renuevan automáticamente a menos que se cancelen. Puedes gestionar tu suscripción en cualquier momento desde tu perfil.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default StorePage;
