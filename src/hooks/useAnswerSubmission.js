@@ -1,7 +1,7 @@
 // hooks/useAnswerSubmission.js
 import { useState } from 'react';
 import { db } from '../firebaseConfig';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
 const useAnswerSubmission = (
   currentUser,
@@ -12,24 +12,26 @@ const useAnswerSubmission = (
   lessonId,
   correctlyAnsweredQuestions,
   setCorrectlyAnsweredQuestions,
-  onShowFeedback // <--- NUEVO PROP: función para mostrar feedback
+  onShowFeedback,
+  totalQuestions,
+  onLevelCompleted
 ) => {
   const [userAnswer, setUserAnswer] = useState('');
 
   const handleAnswerSubmit = async () => {
-    // ... (tus logs y validaciones iniciales como antes) ...
-    if (!currentQuestion || !currentUser?.uid) { /* ... */ return; }
+    if (!currentQuestion || !currentUser?.uid) return;
     const questionIdentifier = currentQuestion.id;
-    if (!questionIdentifier) { /* ... */ return; }
-    if (!(correctlyAnsweredQuestions instanceof Set)) { /* ... */ return; }
+    if (!questionIdentifier) return;
+    if (!(correctlyAnsweredQuestions instanceof Set)) return;
 
     const isCorrect = userAnswer.trim().toLowerCase() === currentQuestion.answer.trim().toLowerCase();
     let feedbackTitle = '';
     let feedbackExplanation = currentQuestion.explanation || '';
 
+    let lessonHadErrors = false;
+
     if (isCorrect) {
       feedbackTitle = '¡Correcto!';
-      // Llama a la función de feedback pasada como prop
       if (typeof onShowFeedback === 'function') {
         onShowFeedback(feedbackTitle, feedbackExplanation, 'success');
       }
@@ -38,23 +40,31 @@ const useAnswerSubmission = (
       if (!alreadyAnswered) {
         const newCorrectlyAnsweredSet = new Set(correctlyAnsweredQuestions).add(questionIdentifier);
         setCorrectlyAnsweredQuestions(newCorrectlyAnsweredSet);
+
         try {
           const userDocRef = doc(db, 'users', currentUser.uid);
+          const userSnap = await getDoc(userDocRef);
+          const userData = userSnap.data();
+
+          const previousHadErrors = userData?.levelProgress?.[levelId]?.lessons?.[lessonId]?.hadErrors;
+
           await updateDoc(userDocRef, {
-            [`levelProgress.${levelId}.correctlyAnswered`]: Array.from(newCorrectlyAnsweredSet)
+            [`levelProgress.${levelId}.lessons.${lessonId}.correctlyAnswered`]: Array.from(newCorrectlyAnsweredSet),
+            [`levelProgress.${levelId}.lessons.${lessonId}.hadErrors`]: previousHadErrors === true ? true : false
           });
         } catch (dbError) {
           console.error("Error actualizando Firestore:", dbError);
-          if (typeof onShowFeedback === 'function') { // También para errores de guardado
+          if (typeof onShowFeedback === 'function') {
             onShowFeedback('Error', 'No se pudo guardar tu progreso.', 'error');
           }
         }
       }
-      if (typeof nextQuestion === 'function') setTimeout(() => nextQuestion(), 1200); // Un poco más de tiempo para leer el toast
-
-    } else { // Respuesta incorrecta
+      setTimeout(() => nextQuestion && nextQuestion(), 1200);
+    } else {
       feedbackTitle = '¡Incorrecto!';
-      // Llama a la función de feedback pasada como prop
+      lessonHadErrors = true;
+console.log(lessonHadErrors, 'lessonHadErrors');
+
       if (typeof onShowFeedback === 'function') {
         onShowFeedback(feedbackTitle, feedbackExplanation, 'error');
       }
@@ -62,7 +72,17 @@ const useAnswerSubmission = (
       if (typeof handleLifeLoss === 'function') {
         await handleLifeLoss();
       }
-      if (typeof nextQuestion === 'function') setTimeout(() => nextQuestion(), 1500); // Un poco más de tiempo
+
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          [`levelProgress.${levelId}.lessons.${lessonId}.hadErrors`]: true
+        });
+      } catch (dbError) {
+        console.error("Error registrando error en Firestore:", dbError);
+      }
+
+      setTimeout(() => nextQuestion && nextQuestion(), 1500);
     }
     setUserAnswer('');
   };

@@ -36,3 +36,32 @@
     transform: rotate(360deg);
   }
 }
+.module-glow {
+  position: relative;
+  z-index: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.module-glow::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(270deg, #22d3ee, #3b82f6, #22d3ee); /* cyan-blue-cyan */
+  background-size: 600% 600%;
+  animation: border-glow 3s linear infinite;
+  z-index: -1;
+  border-radius: inherit;
+  filter: blur(4px);
+}
+
+@keyframes border-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
