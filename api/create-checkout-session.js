@@ -1,13 +1,11 @@
 // /api/create-checkout-session.js
-const secretKey = 'sk_test_51RZfEzRVsZII839OrQ97I2PP3J9yh3WDBYIE9WyYOhEVaWqRlhJZKDi4Z5x35cehvs9MflmLIil7ITo37i0VN2G400vpONt1Tu'
-const stripe = require('stripe')(secretKey); // Usa tu clave secreta de Stripe
-console.log(secretKey, 'Stripe Secret Key'); // Verifica que la clave se esté cargando correctamente
-console.log(process.env.STRIPE_SECRET_KEY, 'Stripe Secret Key from env'); // Verifica que la clave de entorno se esté cargando correctamente
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Usa tu clave secreta de Stripe
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      // Aquí, puedes configurar los detalles de tu sesión de pago
+      // Crear la sesión de pago de Stripe
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: req.body.items.map(item => ({
@@ -25,11 +23,13 @@ export default async function handler(req, res) {
         cancel_url: `${req.headers.origin}/cancel`, // URL de cancelación
       });
 
+      // Responder con el sessionId en formato JSON
       res.status(200).json({ sessionId: session.id });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error(error); // Log de errores para depuración
+      res.status(500).json({ error: 'Hubo un error al crear la sesión de pago' });
     }
   } else {
-    res.status(405).send({ message: 'Método no permitido' });
+    res.status(405).json({ error: 'Método no permitido' });
   }
 }
