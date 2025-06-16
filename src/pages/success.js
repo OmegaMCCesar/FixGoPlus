@@ -8,7 +8,6 @@ const SuccessPage = () => {
       <div className="text-center">
         <h1 className="text-3xl font-bold text-green-600 mb-4">¡Pago Exitoso!</h1>
         <p className="text-lg mb-6">Gracias por tu compra. Tu pago ha sido procesado correctamente.</p>
-        <p className="text-sm text-gray-600 mb-8">Recibirás un correo con los detalles de tu compra.</p>
         <Link to="/" className="bg-brand-blue text-white py-2 px-6 rounded-lg">Volver al inicio</Link>
       </div>
     </div>
