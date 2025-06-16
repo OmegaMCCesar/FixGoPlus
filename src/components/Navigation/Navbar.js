@@ -9,6 +9,7 @@ import { ReactComponent as TuerquitaLlenaIcon } from '../../assets/icons/tuerqui
 import { ReactComponent as TuerquitaVaciaIcon } from '../../assets/icons/tuerquita-vacia.svg';
 import { ReactComponent as FlamesIcon } from '../../assets/icons/tuerquita-llenaa.svg';
 
+
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -33,19 +34,22 @@ const Navbar = () => {
   }, [location.pathname]);
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      // console.log("Sesión cerrada exitosamente");
-      navigate('/login');
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      toast.error("Error al cerrar sesión. Inténtalo de nuevo.");
-    }
-  };
+  try {
+    await signOut(auth);
+    setCurrentUser(null); // Limpiar contexto de usuario
+    toast.success("Sesión cerrada correctamente.");
+    navigate('/login');
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    toast.error("Error al cerrar sesión. Inténtalo de nuevo.");
+  }
+};
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  const { setCurrentUser } = useContext(UserContext);
 
   const navLinkBaseStyle = "px-3 py-2 rounded-md text-sm font-semibold transition-colors duration-150 ease-in-out";
   const desktopNavLinkStyle = `${navLinkBaseStyle} text-neutral-white hover:bg-blue-700 hover:text-neutral-white`;

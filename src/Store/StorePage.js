@@ -1,20 +1,15 @@
-// src/components/Store/StorePage.js
 import React, { useContext } from 'react';
-import { UserContext } from '../contexts/UserContext'; // Ajusta si es ../contexts/
-import Navbar from '../components/Navigation/Navbar'; // Ajusta si es ../components/Navigation/
-import { ReactComponent as TuerquitaLlenaIcon } from '../assets/icons/tuerquita-llenaa.svg'; // Icono principal de tuerquitas
+import { UserContext } from '../contexts/UserContext';
+import { loadStripe } from '@stripe/stripe-js';
+import Navbar from '../components/Navigation/Navbar';
+import { ReactComponent as TuerquitaLlenaIcon } from '../assets/icons/tuerquita-llenaa.svg';
 import { ReactComponent as InfiniteIcon } from '../assets/icons/infinite-pictogram-svgrepo-com.svg';
 import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.svg';
 import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
-// Iconos adicionales para características (opcional, o usa un placeholder)
-const CheckmarkFeatureIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-brand-green">
-        <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
-    </svg>
-);
+import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg'; // Asegúrate de tener este icono
 
+const stripePromise = loadStripe('pk_test_51RZfEzRVsZII839OkCnWHe5g5by7zDGHNF4Q1LZH1vD8vlTZmqZ5mwyVMNtcktWpHNMN5N8HLi1ghvIdRJ0WKZ2o00IvoFCeYh');
 
-// DATOS DE PRODUCTOS (con sugerencias de colores de la paleta)
 const tuerquitaPackages = [
   { id: 't15', name: "Paquete Arranque", amount: 15, price: '$5 MXN', pricePerUnit: '$0.33', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
   { id: 't50', name: "Paquete Impulso", amount: 50, price: '$15 MXN', pricePerUnit: '$0.30', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
@@ -59,21 +54,66 @@ const subscriptionPlans = [
 const StorePage = () => {
   const { currentUser } = useContext(UserContext);
 
-  const handleTuerquitaPurchase = (packageId, amount) => {
-    alert(`Iniciando compra del paquete ${packageId} (${amount} tuerquitas). ¡Integración de pago necesaria!`);
+  const handleTuerquitaPurchase = async (pkg) => {
+    const stripe = await stripePromise;
+
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: [
+          {
+            name: pkg.name,
+            price: parseFloat(pkg.price.replace('$', '').replace('MXN', '').trim()) * 100, // Convertir a centavos
+            quantity: 1,
+          },
+        ],
+      }),
+    });
+
+    const { sessionId } = await response.json();
+
+    // Redirigir a la página de pago de Stripe
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+    if (error) {
+      console.error('Error al iniciar el pago:', error);
+    }
   };
 
-  const handleSubscriptionPurchase = (planId) => {
-    alert(`Iniciando suscripción al plan ${planId}. ¡Integración de pago recurrente necesaria!`);
-  }
+  const handleSubscriptionPurchase = async (plan) => {
+    const stripe = await stripePromise;
 
-  const CardBaseStyle = "bg-neutral-white rounded-2xl p-6 md:p-8 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out relative";
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: [
+          {
+            name: plan.name,
+            price: parseFloat(plan.price.replace('$', '').replace('MXN', '').trim()) * 100, // Convertir a centavos
+            quantity: 1,
+          },
+        ],
+      }),
+    });
+
+    const { sessionId } = await response.json();
+
+    // Redirigir a la página de pago de Stripe
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+    if (error) {
+      console.error('Error al iniciar el pago:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-neutral-light pb-16">
       <Navbar />
       <div className="container mx-auto mt-8 px-4 md:px-6">
-
         <h1 className="text-4xl md:text-5xl font-extrabold text-brand-blue mb-8 md:mb-12 text-center tracking-tight">
           Tienda FixGo
         </h1>
@@ -93,13 +133,13 @@ const StorePage = () => {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-stretch">
             {tuerquitaPackages.map((pkg) => (
-              <div key={pkg.id} className={`${CardBaseStyle} ${pkg.cardStyle} ${pkg.highlight ? 'z-10' : ''}`}>
+              <div key={pkg.id} className={`bg-neutral-white rounded-2xl p-6 md:p-8 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out relative ${pkg.cardStyle}`}>
                 {pkg.highlight && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accent-yellow text-neutral-dark text-xs font-bold py-1.5 px-4 rounded-full shadow-lg whitespace-nowrap">
                     {pkg.highlightText}
                   </div>
                 )}
-                <div className="pt-5 text-center flex-grow"> {/* pt-5 para espacio si hay highlight badge */}
+                <div className="pt-5 text-center flex-grow">
                   <h3 className="text-xl font-semibold text-text-primary mb-3">{pkg.name}</h3>
                   <TuerquitaLlenaIcon className={`h-16 w-16 mb-2 mx-auto ${pkg.iconFill}`} />
                   <div className="flex items-baseline justify-center mb-1">
@@ -110,7 +150,7 @@ const StorePage = () => {
                   <p className="text-xs text-text-secondary mb-6">(~{pkg.pricePerUnit} / tuerquita)</p>
                 </div>
                 <button
-                  onClick={() => handleTuerquitaPurchase(pkg.id, pkg.amount)}
+                  onClick={() => handleTuerquitaPurchase(pkg)}
                   className={`w-full ${pkg.buttonStyle} text-neutral-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300 transform active:scale-95 mt-auto`}
                 >
                   Comprar Paquete
@@ -122,43 +162,43 @@ const StorePage = () => {
 
         {/* Sección de Suscripciones */}
         <section>
-            <h2 className="text-2xl md:text-3xl font-bold text-brand-blue mb-8 text-center">
-                Conviértete en PRO
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch max-w-4xl mx-auto">
-                {subscriptionPlans.map((plan) => (
-                    <div key={plan.id} className={`${CardBaseStyle} ${plan.cardStyle} ${plan.highlight ? 'z-10' : ''}`}>
-                        {plan.highlight && (
-                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-purple text-neutral-white text-xs font-bold py-1.5 px-4 rounded-full shadow-lg whitespace-nowrap">
-                                {plan.highlightText}
-                            </div>
-                        )}
-                        <div className="pt-5 text-center flex-grow">
-                            <h3 className="text-2xl font-bold text-text-primary mb-2">{plan.name}</h3>
-                            <div className="mb-6">
-                                <span className="text-4xl font-extrabold text-brand-blue">{plan.price}</span>
-                                <span className="text-base text-text-secondary ml-1">{plan.period}</span>
-                            </div>
-                            <ul className="space-y-3 text-left mb-8 text-sm md:text-base">
-                                {plan.features.map((feature, index) => (
-                                    <li key={index} className="flex items-center text-text-primary">
-                                        {feature.icon ? 
-                                            <feature.icon className={`h-5 w-5 mr-2.5 shrink-0 ${feature.iconColor || 'text-brand-green'}`} /> 
-                                            : <span className="h-5 w-5 mr-2.5 inline-block shrink-0"></span>}
-                                        <span>{feature.text}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <button
-                            onClick={() => handleSubscriptionPurchase(plan.id)}
-                            className={`w-full ${plan.buttonStyle} text-neutral-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300 transform active:scale-95 mt-auto`}
-                        >
-                            Suscribirse Ahora
-                        </button>
-                    </div>
-                ))}
-            </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-blue mb-8 text-center">
+            Conviértete en PRO
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch max-w-4xl mx-auto">
+            {subscriptionPlans.map((plan) => (
+              <div key={plan.id} className={`bg-neutral-white rounded-2xl p-6 md:p-8 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out relative ${plan.cardStyle}`}>
+                {plan.highlight && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-purple text-neutral-white text-xs font-bold py-1.5 px-4 rounded-full shadow-lg whitespace-nowrap">
+                    {plan.highlightText}
+                  </div>
+                )}
+                <div className="pt-5 text-center flex-grow">
+                  <h3 className="text-2xl font-bold text-text-primary mb-2">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-4xl font-extrabold text-brand-blue">{plan.price}</span>
+                    <span className="text-base text-text-secondary ml-1">{plan.period}</span>
+                  </div>
+                  <ul className="space-y-3 text-left mb-8 text-sm md:text-base">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-center text-text-primary">
+                        {feature.icon ? 
+                          <feature.icon className={`h-5 w-5 mr-2.5 shrink-0 ${feature.iconColor || 'text-brand-green'}`} /> 
+                          : <span className="h-5 w-5 mr-2.5 inline-block shrink-0"></span>}
+                        <span>{feature.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  onClick={() => handleSubscriptionPurchase(plan)}
+                  className={`w-full ${plan.buttonStyle} text-neutral-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-300 transform active:scale-95 mt-auto`}
+                >
+                  Suscribirse Ahora
+                </button>
+              </div>
+            ))}
+          </div>
         </section>
 
         <p className="text-center text-xs text-text-secondary mt-12 md:mt-16">

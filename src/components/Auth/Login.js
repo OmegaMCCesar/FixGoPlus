@@ -6,6 +6,7 @@ import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext"; // Asegúrate que la ruta sea correcta
 import toast from 'react-hot-toast'; // Usaremos toast para errores en lugar de <p>
+import LoginButton from "./LoginButton";
 
 // Opcional: Importa tu logo si quieres añadirlo
 // import FixGoLogo from '../../assets/images/fixgo-logo.svg'; 
@@ -59,8 +60,7 @@ const Login = () => {
         {/* <img src={FixGoLogo} alt="FixGo Logo" className="w-32 mx-auto mb-6" /> */}
         <h2 className="text-3xl font-bold text-center text-brand-blue">
           Iniciar Sesión
-        </h2>
-        
+        </h2> 
         {/* Los errores se mostrarán mediante toasts, ya no se necesita el <p> de error aquí */}
         {/* {error && <p className="text-sm text-center text-accent-red bg-red-100 p-3 rounded-md">{error}</p>} */}
         
@@ -107,19 +107,30 @@ const Login = () => {
               </div>
           <div>
             <button
-              type="submit"
-              disabled={loading}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-neutral-white 
-                         focus:outline-none focus:ring-2 focus:ring-offset-2 
-                         transition-all duration-150 ease-in-out transform active:scale-95
-                         ${
-                           loading 
-                             ? 'bg-orange-300 cursor-not-allowed' // Naranja más claro para deshabilitado
-                             : 'bg-accent-orange hover:bg-orange-600 focus:ring-accent-orange'
-                         }`}
-            >
-              {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-            </button>
+  type="submit"
+  disabled={loading}
+  className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-neutral-white 
+             focus:outline-none focus:ring-2 focus:ring-offset-2
+             transition-all duration-150 ease-in-out transform active:scale-95
+             ${
+               loading 
+                 ? 'bg-orange-300 cursor-not-allowed'
+                 : 'bg-accent-orange hover:bg-orange-600 focus:ring-accent-orange'
+             }`}
+>
+  {loading ? 'Iniciando...' : 'Iniciar Sesión'}
+</button>
+
+{/* Separador visual */}
+<div className="relative flex items-center my-4">
+  <div className="flex-grow border-t border-neutral-medium"></div>
+  <span className="mx-4 text-sm text-text-secondary">o</span>
+  <div className="flex-grow border-t border-neutral-medium"></div>
+</div>
+
+{/* Botón de Google */}
+<LoginButton />
+
           </div>
         </form>
         <p className="text-sm text-center text-text-secondary">
