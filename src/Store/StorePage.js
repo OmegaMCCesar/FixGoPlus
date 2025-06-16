@@ -8,7 +8,7 @@ import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.
 import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
 import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg'; // Asegúrate de tener este icono
 
-const stripePromise = loadStripe('pk_test_51RZfEzRVsZII839OkCnWHe5g5by7zDGHNF4Q1LZH1vD8vlTZmqZ5mwyVMNtcktWpHNMN5N8HLi1ghvIdRJ0WKZ2o00IvoFCeYh');
+const stripePromise = loadStripe('pk_live_51RZfEsD0jAMMR12f9ZjlZykvjzHDZDJ4zCdIScpUVcmU3FoUgHr9odDF7lJNrIENtNb3KkFdM3xFo3FuCbQkHBxM00Kklk9r9O');
 
 const tuerquitaPackages = [
   { id: 't15', name: "Paquete Arranque", amount: 15, price: '$5 MXN', pricePerUnit: '$0.33', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
