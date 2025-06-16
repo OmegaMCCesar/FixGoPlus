@@ -11,7 +11,8 @@ import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgre
 const stripePromiseSk = loadStripe('pk_live_51RZfEsD0jAMMR12f9ZjlZykvjzHDZDJ4zCdIScpUVcmU3FoUgHr9odDF7lJNrIENtNb3KkFdM3xFo3FuCbQkHBxM00Kklk9r9O');
 
 const tuerquitaPackages = [
-  { id: 't15', name: "Paquete Arranque", amount: 15, price: '$05 MXN', pricePerUnit: '$0.33', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
+
+  { id: 't15', name: "Paquete Basico", amount: 10, price: '$10 MXN', pricePerUnit: '$0.31', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
   { id: 't50', name: "Paquete Impulso", amount: 50, price: '$15 MXN', pricePerUnit: '$0.30', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
   { id: 't100', name: "Kit Esencial", amount: 100, price: '$25 MXN', pricePerUnit: '$0.25', cardStyle: "border-accent-yellow ring-2 ring-accent-yellow scale-105", buttonStyle: "bg-accent-orange hover:bg-orange-600", iconFill: "fill-accent-orange", highlight: true, highlightText: '¡Recomendado!' },
   { id: 't250', name: "Experto FixGo", amount: 250, price: '$50 MXN', pricePerUnit: '$0.20', cardStyle: "border-brand-purple", buttonStyle: "bg-brand-purple hover:bg-purple-700", iconFill: "fill-accent-orange" },
