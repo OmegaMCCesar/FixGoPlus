@@ -14,7 +14,7 @@ export default async function handler(req, res) {
             product_data: {
               name: item.name,
             },
-            unit_amount: item.price * 10, // Convertimos a centavos
+            unit_amount: item.price , // Convertimos a centavos
           },
           quantity: item.quantity,
         })),
