@@ -10,6 +10,7 @@ import LevelsPage from './pages/LevelsPage';
 import LessonPage from './components/Lesson/LessonPage';
 import UserProfilePage from './profile/UserProfilePage';
 import StorePage from './Store/StorePage';
+import CancelPage from './pages/cancel';
 // Importa los componentes de Admin
 //solo apara añadir algo mas 
 
@@ -25,6 +26,7 @@ import UserProfileEditPage from './profile/UserProfileEditPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './components/Navigation/Footer';
 import TermsPage from './pages/Static/TermsPage';
+import SuccessPage from './pages/success';
 
 // Componente para proteger rutas de Admin
 const ProtectedRouteAdmin = () => {
@@ -70,6 +72,8 @@ function App() {
         <Route path='/profile/edit' element={<ProtectedRoute><UserProfileEditPage editMode={true} /></ProtectedRoute>} />
         <Route path="/levels/:levelId" element={<ProtectedRoute><LevelDetailPage /></ProtectedRoute>} />
         <Route path='/store' element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
+        <Route path='/success' element={<ProtectedRoute><SuccessPage /></ProtectedRoute>} />
+        <Route path='/cancel' element={<ProtectedRoute><CancelPage /></ProtectedRoute>} />
 
         {/* Rutas Protegidas para Administradores */}
         <Route element={<ProtectedRouteAdmin />}> {/* Elemento padre que protege */}
