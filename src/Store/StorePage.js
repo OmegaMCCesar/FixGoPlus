@@ -8,7 +8,7 @@ import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.
 import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
 import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg'; // Asegúrate de tener este icono
 
-const stripePromise = loadStripe('pk_live_51RZfEsD0jAMMR12f9ZjlZykvjzHDZDJ4zCdIScpUVcmU3FoUgHr9odDF7lJNrIENtNb3KkFdM3xFo3FuCbQkHBxM00Kklk9r9O');
+const stripePromiseSk = loadStripe('pk_live_51RZfEsD0jAMMR12f9ZjlZykvjzHDZDJ4zCdIScpUVcmU3FoUgHr9odDF7lJNrIENtNb3KkFdM3xFo3FuCbQkHBxM00Kklk9r9O');
 
 const tuerquitaPackages = [
   { id: 't15', name: "Paquete Arranque", amount: 15, price: '$5 MXN', pricePerUnit: '$0.33', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
@@ -55,7 +55,7 @@ const StorePage = () => {
   const { currentUser } = useContext(UserContext);
 
   const handleTuerquitaPurchase = async (pkg) => {
-    const stripe = await stripePromise;
+    const stripe = await stripePromiseSk;
 
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
@@ -83,7 +83,7 @@ const StorePage = () => {
   };
 
   const handleSubscriptionPurchase = async (plan) => {
-    const stripe = await stripePromise;
+    const stripe = await stripePromiseSk;
 
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
