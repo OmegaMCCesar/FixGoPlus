@@ -32,7 +32,7 @@ const LevelDetailPage = () => {
   const { currentUser, loading: userLoading } = useContext(UserContext);
 
   const [levelInfo, setLevelInfo] = useState(null);
-  const [moduleInfo, setModuleInfo] = useState(null);
+  const [, setModuleInfo] = useState(null);
   const [lessonsWithStatus, setLessonsWithStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

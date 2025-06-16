@@ -34,10 +34,7 @@ const DashboardPage = () => {
           const completedModulesSnapshot = await getDocs(completedModulesRef);
           const userCompletedModuleIds = new Set(completedModulesSnapshot.docs.map(doc => doc.id));
 
-          const levelsAll = currentUser.levels || [];
-
           const processedModules = allModules.map(module => {
-            const levels = levelsAll.filter(l => l.moduleId === module.id);
             const isAdiamantado = userCompletedModuleIds.has(module.id);
 
             let isUnlocked = module.order === 1;
