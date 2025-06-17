@@ -94,6 +94,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/" className={desktopNavLinkStyle}>Dashboard</Link>
+                <Link to="/rankings" className={desktopNavLinkStyle}>Rankings</Link>
                 <Link to="/profile" className={desktopNavLinkStyle}>Perfil</Link>
                 <Link to="/store" className={desktopNavLinkStyle}>Tienda</Link>
               </>

@@ -27,6 +27,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import Footer from './components/Navigation/Footer';
 import TermsPage from './pages/Static/TermsPage';
 import SuccessPage from './pages/success';
+import Ranking from './pages/Ranking';
 
 // Componente para proteger rutas de Admin
 const ProtectedRouteAdmin = () => {
@@ -74,6 +75,7 @@ function App() {
         <Route path='/store' element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
         <Route path='/success' element={<ProtectedRoute><SuccessPage /></ProtectedRoute>} />
         <Route path='/cancel' element={<ProtectedRoute><CancelPage /></ProtectedRoute>} />
+        <Route path='/rankings' element={<ProtectedRoute><Ranking /></ProtectedRoute>} /> {/* Podrías tener una página de rankings específica */}
 
         {/* Rutas Protegidas para Administradores */}
         <Route element={<ProtectedRouteAdmin />}> {/* Elemento padre que protege */}
