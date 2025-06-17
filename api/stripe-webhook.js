@@ -1,71 +1,83 @@
-// /api/stripe-webhook.js
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);
-const admin = require('firebase-admin');
-const express = require('express');
-const app = express();
-app.use(express.json());
+import Stripe from 'stripe';
+import { initializeApp, credential, firestore } from 'firebase-admin';
+import { getMessaging } from 'firebase-admin/messaging';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-// Inicializar Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
-const db = admin.firestore();
+export const config = { api: { bodyParser: false } };
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET; // La clave secreta del webhook de Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST, { apiVersion: '2020-08-27' });
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-app.post('/api/stripe-webhook', async (req, res) => {
+if (!initializeApp.apps?.length) {
+  initializeApp({ credential: credential.applicationDefault() });
+}
+const db = firestore();
+const fcm = getMessaging();
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const buf = await req.text();
   const sig = req.headers['stripe-signature'];
   let event;
+  try {
+    event = stripe.webhooks.constructEvent(buf, sig, endpointSecret);
+  } catch (err) {
+    console.error('⚠️ Invalid signature:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  const session = event.data.object;
+  const userId = session.client_reference_id;
+  if (!userId) {
+    console.warn('⚠️ No user reference_id');
+    return res.status(200).send('Ignored');
+  }
+
+  const idempotencyDoc = db.collection('webhookEvents').doc(event.id);
+  const exists = (await idempotencyDoc.get()).exists;
+  if (exists) {
+    return res.status(200).send('Duplicate');
+  }
+  await idempotencyDoc.set({ received: true });
+
+  res.status(200).send('Event received'); // Respondemos rápido :contentReference[oaicite:4]{index=4}
 
   try {
-    // Verifica la firma del webhook
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    const userRef = db.collection('users').doc(userId);
+    const u = await userRef.get();
+    if (!u.exists) throw new Error('User not found');
 
-    // Manejar el evento de pago exitoso
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-
-      // Verifica si es una compra de tuerquitas
-      if (session.client_reference_id) {
-        // Obtén el ID del usuario desde la referencia
-        const userRef = db.collection('users').doc(session.client_reference_id);
-        const userDoc = await userRef.get();
-
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-
-          // Actualiza las tuerquitas del usuario
-          const newTuerquitas = userData.tuerquitas + session.amount_total / 100; // El total del pago en MXN
-          await userRef.update({
-            tuerquitas: newTuerquitas,
-            lastPaymentDate: admin.firestore.FieldValue.serverTimestamp(),
-          });
-
-          console.log(`Tuerquitas actualizadas para el usuario ${session.client_reference_id}`);
-        }
-      }
-
-      // Verifica si es una suscripción
+      const added = session.amount_total ? session.amount_total / 100 : 0;
+      await userRef.update({
+        tuerquitas: firestore.FieldValue.increment(added),
+        lastPaymentDate: firestore.FieldValue.serverTimestamp(),
+      });
       if (session.subscription) {
-        // Activar el plan de suscripción del usuario (esto puede incluir otras acciones como la activación de funciones premium)
-        const userRef = db.collection('users').doc(session.client_reference_id);
         await userRef.update({
           subscriptionStatus: 'active',
-          subscriptionPlan: session.metadata.plan, // Guarda el plan elegido
+          subscriptionPlan: session.metadata?.plan || null,
         });
-
-        console.log(`Plan de suscripción activado para el usuario ${session.client_reference_id}`);
       }
+      console.log(`🔔 Updated user ${userId}: +${added} tuerquitas`);
 
-      // Responde con un 200 OK para confirmar que recibiste el evento
-      res.status(200).send('Evento recibido');
-    } else {
-      res.status(400).send('Evento no manejado');
+      // 1) Notificación push via FCM
+      await fcm.send({
+        token: u.data().fcmToken,
+        notification: {
+          title: '¡Pago recibido!',
+          body: `Se agregaron ${added} tuerquitas a tu cuenta.`,
+        },
+        data: { type: 'payment', amount: added.toString() }
+      });
+
+      // 2) Notificación en tiempo real con Pusher/Ably (opcional)
+      // pusher.trigger(`user-${userId}`, 'tuerquitas-updated', { added, current: u.data().tuerquitas + added });
     }
-  } catch (err) {
-    console.error('Error en el webhook:', err);
-    res.status(400).send('Webhook error');
-  }
-});
 
-module.exports = app;
+  } catch (e) {
+    console.error('💥 Processing error:', e);
+    // Aquí podrías reintentar con una cola o registrar el fallo
+  }
+}
