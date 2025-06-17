@@ -3,7 +3,7 @@
 import Stripe from 'stripe';
 import { initializeApp, credential, firestore } from 'firebase-admin';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_SK_LIVE, {
   apiVersion: '2020-08-27',
 });
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
