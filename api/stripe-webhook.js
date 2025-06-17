@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export const config = { api: { bodyParser: false } };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST, { apiVersion: '2020-08-27' });
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const endpointSecret = 'whsec_ndfai5mcagKd4YBJZhCBEvGEQd6Max7a';
 
 if (!initializeApp.apps?.length) {
   initializeApp({ credential: credential.applicationDefault() });
