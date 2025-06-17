@@ -8,10 +8,9 @@ import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.
 import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
 import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg'; // Asegúrate de tener este icono
 
-const stripePromiseSk = loadStripe('pk_live_51RZfEsD0jAMMR12f9ZjlZykvjzHDZDJ4zCdIScpUVcmU3FoUgHr9odDF7lJNrIENtNb3KkFdM3xFo3FuCbQkHBxM00Kklk9r9O');
-
+const stripePromiseSk = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY_TEST);
 const tuerquitaPackages = [
-  { id: 't1', name: "Paquete 1", amount: 1, price: '$1 MXN', pricePerUnit: '$1', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
+
   { id: 't15', name: "Paquete Basico", amount: 10, price: '$10 MXN', pricePerUnit: '$0.31', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
   { id: 't50', name: "Paquete Impulso", amount: 50, price: '$15 MXN', pricePerUnit: '$0.30', cardStyle: "border-neutral-medium", buttonStyle: "bg-brand-blue hover:bg-blue-700", iconFill: "fill-accent-orange" },
   { id: 't100', name: "Kit Esencial", amount: 100, price: '$25 MXN', pricePerUnit: '$0.25', cardStyle: "border-accent-yellow ring-2 ring-accent-yellow scale-105", buttonStyle: "bg-accent-orange hover:bg-orange-600", iconFill: "fill-accent-orange", highlight: true, highlightText: '¡Recomendado!' },

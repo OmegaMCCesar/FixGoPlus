@@ -1,5 +1,5 @@
 // /api/stripe-webhook.js
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_SK_LIVE);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);
 const admin = require('firebase-admin');
 const express = require('express');
 const app = express();
