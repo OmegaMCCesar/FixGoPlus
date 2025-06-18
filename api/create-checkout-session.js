@@ -1,6 +1,6 @@
 // /api/create-checkout-session.js
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_SK_LIVE); // Usa tu clave secreta de Stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST); // Usa tu clave secreta de Stripe
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {

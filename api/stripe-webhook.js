@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { initializeApp, credential, firestore } from 'firebase-admin';
 
 // Inicializar Stripe con tu clave secreta (producción o prueba según el entorno)
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_SK_LIVE, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST, {
   apiVersion: '2020-08-27',
 });
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
