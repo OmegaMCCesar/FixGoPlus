@@ -56,34 +56,31 @@ const StorePage = () => {
   const [loading, setLoading] = useState(false);  // Agregar estado para manejar el spinner de carga
 
   const handleTuerquitaPurchase = async (pkg) => {
-    setLoading(true);  // Activar el spinner al hacer clic
-    const stripe = await stripePromiseSk;
+  setLoading(true);
+  const stripe = await stripePromiseSk;
 
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: [
-          {
-            name: pkg.name,
-            price: parseFloat(pkg.price.replace('$', '').replace('MXN', '').trim()) * 100, // Convertir a centavos
-            quantity: 1,
-          },
-        ],
-      }),
-    });
+  const response = await fetch("https://fixgo-301b6.cloudfunctions.net/api/create-checkout-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      tuerquitas: pkg.amount,
+      userId: currentUser.uid,
+    }),
+  });
 
-    const { sessionId } = await response.json();
+  const data = await response.json();
 
-    // Redirigir a la página de pago de Stripe
-    const { error } = await stripe.redirectToCheckout({ sessionId });
-    if (error) {
-      console.error('Error al iniciar el pago:', error);
-    }
-    setLoading(false);  // Desactivar el spinner después de la redirección
-  };
+  if (data.url) {
+    window.location.href = data.url;
+  } else {
+    alert("Hubo un error al iniciar el pago");
+  }
+
+  setLoading(false);
+};
+
 
   const handleSubscriptionPurchase = async (plan) => {
     setLoading(true);  // Activar el spinner al hacer clic
