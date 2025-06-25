@@ -8,7 +8,7 @@ import { ReactComponent as AdFreeIcon } from '../assets/icons/block-svgrepo-com.
 import { ReactComponent as XPMultiplierIcon } from '../assets/icons/xp-svgrepo-com.svg';
 import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg';
 
-const stripePromiseSk = loadStripe('pk_test_51RZfEzRVsZII839OkCnWHe5g5by7zDGHNF4Q1LZH1vD8vlTZmqZ5mwyVMNtcktWpHNMN5N8HLi1ghvIdRJ0WKZ2o00IvoFCeYh');
+const stripePromiseSk = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso2mbXhNKe6bqfGYvbmD2RqeF19YyJDmRr07C8ZSFdn0mBCb2DjD800oxnVrX4L');
 
 const StorePage = () => {
   const { currentUser } = useContext(UserContext);
