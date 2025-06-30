@@ -14,22 +14,22 @@ const StorePage = () => {
   const { currentUser } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
-  const handleTuerquitaPurchase = async (pkg) => {
-    setLoading(true);
-    const stripe = await stripePromiseSk;
+ const handleTuerquitaPurchase = async (pkg) => {
+  setLoading(true);
+  try {
     const resp = await fetch(
-      "https://us-central1-fixgo-301b6.cloudfunctions.net/api/create-stripe-tuerquitas-session",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tuerquitas: pkg.amount, userId: currentUser.uid })
-      }
+      "https://fix-go-plus.vercel.app/api/create-stripe-tuerquitas-session",
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tuerquitas: pkg.amount, userId: currentUser.uid }) }
     );
     const data = await resp.json();
-    setLoading(false);
     if (data.url) window.location.href = data.url;
-    else alert("Error al iniciar el pago: " + (data.error || ''));
-  };
+    else throw new Error(data.error || 'Unknown error');
+  } catch (err) {
+    alert("Error al iniciar pago: " + err.message);
+  }
+  setLoading(false);
+};
+
 
   const handleSubscriptionPurchase = async (plan) => {
     setLoading(true);
