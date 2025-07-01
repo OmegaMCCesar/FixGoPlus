@@ -45,7 +45,7 @@ const StorePage = () => {
     console.log('Iniciando compra de suscripción:', plan);
     
     const priceId = PRICE_IDS[plan.id];
-    console.log('Price ID para el plan:', priceId);
+    console.log(plan.name ,'nam plan ');
     
     if (!priceId) {
       alert('Plan no configurado correctamente');
