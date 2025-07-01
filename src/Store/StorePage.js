@@ -9,7 +9,7 @@ const stripePromise = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso
 
 // Mapea plan.id a Price ID de Stripe
 const PRICE_IDS = {
-  aprendiz_monthly: 'prod_Sb55SDGdVtAWgj',  // ⚠️ reemplaza con tus Price IDs reales
+  aprendiz_monthly: 'prod_Sb55SDGdVtAWgj', 
   tecnico_monthly: 'prod_Sb58abD0O0EjE7'
 };
 
@@ -131,8 +131,8 @@ const StorePage = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
-                  { id: 'aprendiz_monthly', name: 'Aprendiz PRO', price: '$49 MXN', features: ['Vidas Infinitas','Sin Anuncios','5 Tuerquitas Diarias'] },
-                  { id: 'tecnico_monthly', name: 'Técnico PRO', price: '$99 MXN', features: ['Todo lo anterior + boost y descuentos'] }
+                  { id: 'prod_Sb55SDGdVtAWgj', name: 'Aprendiz PRO', price: '$49 MXN', features: ['Vidas Infinitas','Sin Anuncios','5 Tuerquitas Diarias'] },
+                  { id: 'prod_Sb58abD0O0EjE7', name: 'Técnico PRO', price: '$99 MXN', features: ['Todo lo anterior + boost y descuentos'] }
                 ].map(plan => (
                   <div key={plan.id} className="bg-white rounded-2xl p-6 shadow-xl flex flex-col">
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
