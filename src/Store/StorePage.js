@@ -7,10 +7,10 @@ import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgre
 
 const stripePromise = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso2mbXhNKe6bqfGYvbmD2RqeF19YyJDmRr07C8ZSFdn0mBCb2DjD800oxnVrX4L'); // tu clave pública
 
-// Mapeo entre plan.id y priceId de Stripe
+// Mapea plan.id a Price ID de Stripe
 const PRICE_IDS = {
-  aprendiz_monthly: 'price_1XXXaprendiz',   // reemplaza con tus price IDs reales
-  tecnico_monthly: 'price_1YYYtecnico'
+  aprendiz_monthly: 'price_1AAAaprendiz',  // ⚠️ reemplaza con tus Price IDs reales
+  tecnico_monthly: 'price_1BBBtecnico'
 };
 
 const StorePage = () => {
@@ -21,18 +21,21 @@ const StorePage = () => {
     setLoading(true);
     try {
       const resp = await fetch(
-        "https://api-aaixedti3q-uc.a.run.app/create-stripe-tuerquitas-session",
+        'https://api-aaixedti3q-uc.a.run.app/create-stripe-tuerquitas-session',
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tuerquitas: pkg.amount, userId: currentUser.uid })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tuerquitas: pkg.amount,
+            userId: currentUser.uid
+          })
         }
       );
       const data = await resp.json();
       if (data.url) window.location.href = data.url;
       else throw new Error(data.error || 'Unknown error');
     } catch (err) {
-      alert("Error al iniciar pago: " + err.message);
+      alert('Error al iniciar pago: ' + err.message);
     }
     setLoading(false);
   };
@@ -41,25 +44,28 @@ const StorePage = () => {
     setLoading(true);
     const priceId = PRICE_IDS[plan.id];
     if (!priceId) {
-      alert("Plan no configurado correctamente");
+      alert('Plan no configurado correctamente');
       setLoading(false);
       return;
     }
 
     try {
       const resp = await fetch(
-        "https://api-aaixedti3q-uc.a.run.app/create-stripe-subscription-session",
+        'https://api-aaixedti3q-uc.a.run.app/create-stripe-subscription-session',
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ planId: priceId, userId: currentUser.uid })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            planId: priceId,
+            userId: currentUser.uid
+          })
         }
       );
       const data = await resp.json();
       if (data.url) window.location.href = data.url;
       else throw new Error(data.error || 'Unknown error');
     } catch (err) {
-      alert("Error al iniciar suscripción: " + err.message);
+      alert('Error al iniciar suscripción: ' + err.message);
     }
     setLoading(false);
   };
@@ -132,7 +138,12 @@ const StorePage = () => {
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                     <span className="text-4xl font-extrabold text-brand-blue">{plan.price}</span>
                     <ul className="space-y-2 my-4">
-                      {plan.features.map(f => <li key={f} className="flex items-center"><CheckmarkFeatureIcon className="h-5 w-5 mr-2 fill-brand-green"/> {f}</li>)}
+                      {plan.features.map(f => (
+                        <li key={f} className="flex items-center">
+                          <CheckmarkFeatureIcon className="h-5 w-5 mr-2 fill-brand-green"/>
+                          {f}
+                        </li>
+                      ))}
                     </ul>
                     <button
                       onClick={() => handleSubscriptionPurchase(plan)}
