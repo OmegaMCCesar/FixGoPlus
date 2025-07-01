@@ -9,8 +9,8 @@ const stripePromise = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso
 
 // Mapea plan.id a Price ID de Stripe
 const PRICE_IDS = {
-  aprendiz_monthly: 49,  // ⚠️ reemplaza con tus Price IDs reales
-  tecnico_monthly: '99' // ⚠️ reemplaza con tus Price IDs reales
+  aprendiz_monthly: 'prod_Sb55SDGdVtAWgj',  // ⚠️ reemplaza con tus Price IDs reales
+  tecnico_monthly: 'prod_Sb58abD0O0EjE7' // ⚠️ reemplaza con tus Price IDs reales
 };
 
 const StorePage = () => {
