@@ -18,7 +18,7 @@ const StorePage = () => {
   setLoading(true);
   try {
     const resp = await fetch(
-      "https://fix-go-plus.vercel.app/api/create-stripe-tuerquitas-session",
+      "https://api-aaixedti3q-uc.a.run.app/create-stripe-tuerquitas-session",
       { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tuerquitas: pkg.amount, userId: currentUser.uid }) }
     );
     const data = await resp.json();
@@ -35,7 +35,7 @@ const StorePage = () => {
     setLoading(true);
     const stripe = await stripePromiseSk;
     const resp = await fetch(
-      "https://us-central1-fixgo-301b6.cloudfunctions.net/api/create-stripe-subscription-session",
+      "https://api-aaixedti3q-uc.a.run.app/create-stripe-subscription-session",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
