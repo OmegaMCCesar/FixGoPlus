@@ -61,7 +61,8 @@ const StorePage = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             planId: priceId,
-            userId: currentUser.uid
+            userId: currentUser.uid,
+            planName: plan.id
           })
         }
       );
