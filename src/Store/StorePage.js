@@ -46,7 +46,7 @@ const StorePage = () => {
     
     const priceId = PRICE_IDS[plan.id];
     console.log(plan.name ,'name plan ');
-    const namePlan = plan.name;
+    const planName = plan.name;
     
     if (!priceId) {
       alert('Plan no configurado correctamente');
@@ -63,7 +63,7 @@ const StorePage = () => {
           body: JSON.stringify({
             planId: priceId,
             userId: currentUser.uid,
-            planName: namePlan
+            planName: planName
           })
         }
       );
