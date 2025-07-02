@@ -45,7 +45,7 @@ const StorePage = () => {
     console.log('Iniciando compra de suscripción:', plan);
     
     const priceId = PRICE_IDS[plan.id];
-    console.log(plan.name ,'nam plan ');
+    console.log(plan.name ,'name plan ');
     const namePlan = plan.name;
     
     if (!priceId) {
