@@ -137,8 +137,8 @@ const StorePage = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
-                  { id: 'aprendiz_monthly', name: 'Aprendiz PRO', price: '$49 MXN', features: ['Vidas Infinitas','Sin Anuncios','5 Tuerquitas Diarias'] },
-                  { id: 'tecnico_monthly', name: 'Técnico PRO', price: '$99 MXN', features: ['Todo lo anterior + boost y descuentos'] }
+                  { id: 'aprendiz_monthly', name: 'Aprendiz-PRO', price: '$49 MXN', features: ['Vidas Infinitas','Sin Anuncios','5 Tuerquitas Diarias'] },
+                  { id: 'tecnico_monthly', name: 'Técnico-PRO', price: '$99 MXN', features: ['Todo lo anterior + boost y descuentos'] }
                 ].map(plan => (
                   <div key={plan.id} className="bg-white rounded-2xl p-6 shadow-xl flex flex-col">
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>

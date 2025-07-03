@@ -22,9 +22,31 @@ const CloseIcon = () => (
   </svg>
 );
 
-const Navbar = () => {
-  const MAX_LIVES = 5;
+  const Navbar = () => {
+  
   const { currentUser } = useContext(UserContext);
+  const MAX_LIVES = 5;
+  const getSubscriptionText = () => {
+  if (currentUser?.subscriptionActive && currentUser?.subscriptionExpiresAt) {
+    const expiresAt = new Date(currentUser.subscriptionExpiresAt);
+    const daysLeft = Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+
+    const style = daysLeft <= 3 ? 'text-red-300' : 'text-green-300';
+    const formattedDate = expiresAt.toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+
+    return {
+      text: `🛡️ ${currentUser.subscriptionPlan} - vence el ${formattedDate}`,
+      style
+    };
+  }
+  return null;
+};
+
+  const subscriptionInfo = getSubscriptionText();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -82,6 +104,13 @@ const Navbar = () => {
                 <FlamesIcon className="h-5 w-5 sm:h-6 sm:w-6 fill-accent-orange mr-1" />
                 <span className="text-neutral-white font-bold text-sm">{currentUser.tuerquitas ?? 0}</span>
               </div>
+
+              {subscriptionInfo && (
+  <div className={`ml-3 text-xs sm:text-sm font-semibold ${subscriptionInfo.style}`} title="Tu suscripción está activa">
+    {subscriptionInfo.text}
+  </div>
+)}
+
             </div>
           )}
 
