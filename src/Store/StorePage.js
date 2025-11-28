@@ -1,16 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../contexts/UserContext';
-import { loadStripe } from '@stripe/stripe-js';
 import Navbar from '../components/Navigation/Navbar';
 import { ReactComponent as TuerquitaLlenaIcon } from '../assets/icons/tuerquita-llenaa.svg';
 import { ReactComponent as CheckmarkFeatureIcon } from '../assets/icons/xp-svgrepo-com.svg';
 
-const stripePromise = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso2mbXhNKe6bqfGYvbmD2RqeF19YyJDmRr07C8ZSFdn0mBCb2DjD800oxnVrX4L'); // tu clave pública
+/* const stripePromise = loadStripe('pk_test_51RdwskGg3IjtOIDTcTLJkva3R3duP554TKKso2mbXhNKe6bqfGYvbmD2RqeF19YyJDmRr07C8ZSFdn0mBCb2DjD800oxnVrX4L');*/ // tu clave pública
 
 // Mapea plan.id a Price ID de Stripe
 const PRICE_IDS = {
-  aprendiz_monthly: 'price_1RfsvmGg3IjtOIDTXjI32kGt',  // ⚠️ reemplaza con tus Price IDs reales
-  tecnico_monthly: 'price_1RfsyfGg3IjtOIDTOVxXgPbs' // ⚠️ reemplaza con tus Price IDs reales
+  aprendiz_monthly: 'price_1RfsvmGg3IjtOIDTXjI32kGt',  
+  tecnico_monthly: 'price_1RfsyfGg3IjtOIDTOVxXgPbs' 
 };
 
 const StorePage = () => {
